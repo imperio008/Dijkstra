@@ -1,7 +1,7 @@
-package src.graphics;
+package graphics;
 
 
-import src.algoritm.Dijkstra;
+import algoritm.Dijkstra;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -219,8 +219,6 @@ public class Controller implements Initializable {
         paint_GRAPH(CircleGraph);
         nextStepButton.setDisable(false);
         clearButton.setDisable(false);
-        //frm = new GraphFrame(readyArr);
-        //frm.setVisible(true);
     }
 
 
@@ -247,7 +245,6 @@ public class Controller implements Initializable {
                     inpInt[i] = ibuff;
                     buff2 += Integer.toString(ibuff) + " ";
                     if (i % 3 == 1) buff2 += "\n";
-                    //System.out.println(inpInt[i]);
                     i++;
                 }
             }
@@ -258,7 +255,6 @@ public class Controller implements Initializable {
         outputTextArea.setText(buff2);
         outputTextArea.setVisible(true);
         startButton.setDisable(false);
-        //drawButton.setDisable(false);
     }
 
     @Override
