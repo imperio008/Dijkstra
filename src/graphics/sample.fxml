@@ -22,9 +22,9 @@
 
 <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="690.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="grapics.Controller">
    <children>
-      <TabPane layoutX="88.0" layoutY="47.0" prefHeight="540.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TabPane fx:id="tabPane1" layoutX="88.0" layoutY="47.0" prefHeight="540.0" prefWidth="700.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
-          <Tab text="Инициализация графа">
+          <Tab fx:id="tab1" text="Инициализация графа">
                <content>
                   <AnchorPane>
                       <children>
@@ -55,7 +55,7 @@
                   </AnchorPane>
                </content>
           </Tab>
-          <Tab text="Отрисовка графа">
+          <Tab fx:id="tab2" text="Отрисовка графа">
             <content>
               <AnchorPane fx:id="AnchPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -70,7 +70,8 @@
                               <Circle fx:id="CircleGraph" centerX="345.0" centerY="220.0" fill="DODGERBLUE" layoutX="345.0" layoutY="203.0" radius="200.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
                            </children>
                         </Pane>
-                        <Button fx:id="clearButton" layoutX="500.0" layoutY="459.0" mnemonicParsing="false" onAction="#clearButtonClicked" text="Очистить граф" />
+                        <Button fx:id="clearButton" layoutX="468.0" layoutY="459.0" mnemonicParsing="false" onAction="#clearButtonClicked" text="Очистить граф" />
+                        <Button fx:id="finalButton" layoutX="293.0" layoutY="459.0" mnemonicParsing="false" onAction="#finalButtonClicked" text="Финальный шаг" />
                      </children></AnchorPane>
             </content>
           </Tab>
