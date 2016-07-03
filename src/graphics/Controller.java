@@ -1,14 +1,11 @@
-package graphics;
+package grapics;
 
 
 import algoritm.Dijkstra;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -43,12 +40,22 @@ public class Controller implements Initializable {
     AnchorPane AnchPane;
     @FXML
     Button clearButton;
+    @FXML
+    TabPane tabPane1 = new TabPane();
+    @FXML
+    Tab tab1 = new Tab();
+    @FXML
+    Tab tab2 = new Tab();
+    @FXML
+    Button finalButton;
     int[] inpInt = null;
     int[] readyArr = null;
     int numV;
     int size = 0;
+    GraphFrame frm;
     GraphStruct temp;
     Dijkstra algoritm;
+    public static final double INF = Integer.MAX_VALUE / 10;
     double m1, m2;
 
     double x1, y1, x2, y2, l1, l2;
@@ -67,10 +74,7 @@ public class Controller implements Initializable {
     }
 
     public void paint_GRAPH(Circle R) {
-        List CircArr = new ArrayList<>(); //точки
-        List LabArr = new ArrayList<>(); //лейблы
-        List LinArr = new ArrayList<>(); // линии
-        Label V1, V2, W;
+        Label V1, V2, V3, W;
         Line edge;
         // Отрисовка графа
         for (int i = 0; i < vertex.size(); i++) {
@@ -80,7 +84,7 @@ public class Controller implements Initializable {
             y2 = R.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(i).second) + R.getCenterY();
 
             edge = new Line(x1, y1, x2, y2);
-            edge.setStrokeWidth(4);
+            edge.setStrokeWidth(7);
             edge.setStroke(Color.WHITE);
             Pane1.getChildren().addAll(edge, new Circle(x1, y1, 9, Color.GOLD), new Circle(x2, y2, 9, Color.GOLD));
             x1 += -4;
@@ -124,39 +128,63 @@ public class Controller implements Initializable {
             y1 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(i).first) + CircleGraph.getCenterY();
             x2 = CircleGraph.getRadius() * Math.cos(2 * Math.PI / numV * vertex.get(i).second) + CircleGraph.getCenterX();
             y2 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(i).second) + CircleGraph.getCenterY();
-            l1 = x1 + 10;
-            l2 = y1 + 10;
-            W = new Label(algoritm.getDist(vertex.get(i).first) + "");
-            W.setLayoutX(l1);
-            W.setLayoutY(l2);
-            W.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: red; -fx-font-family: \"Impact\";");
-            Pane1.getChildren().addAll(W);
-            m1 = x2 + 10;
-            m2 = y2 + 10;
-            W = new Label(algoritm.getDist(vertex.get(i).second) + "");
-            W.setLayoutX(m1);
-            W.setLayoutY(m2);
-            W.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: red; -fx-font-family: \"Impact\";");
-            Pane1.getChildren().addAll(W);
+            if (algoritm.getDist(vertex.get(i).first) != INF) {
+                l1 = x1 + 10;
+                l2 = y1 + 10;
+                W = new Label(algoritm.getDist(vertex.get(i).first) + "");
+                W.setLayoutX(l1);
+                W.setLayoutY(l2);
+                W.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: blue; -fx-font-family: \"Impact\";");
+                Pane1.getChildren().addAll(W);
+                Pane1.getChildren().addAll(new Circle(x1, y1, 9, Color.GOLD));
+            } else if (algoritm.getDist(vertex.get(i).second) != INF) {
+                m1 = x2 + 10;
+                m2 = y2 + 10;
+                W = new Label(algoritm.getDist(vertex.get(i).second) + "");
+                W.setLayoutX(m1);
+                W.setLayoutY(m2);
+                W.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: blue; -fx-font-family: \"Impact\";");
+                Pane1.getChildren().addAll(W);
+            }
+            if ((algoritm.getDist(vertex.get(i).second) != INF) || (algoritm.getDist(vertex.get(i).first) != INF)) {
+                edge = new Line(x1, y1, x2, y2);
+                edge.setStrokeWidth(4);
+                edge.setStroke(Color.RED);
+                Pane1.getChildren().addAll(edge, new Circle(x2, y2, 9, Color.RED), new Circle(x1, y1, 9, Color.RED));
+                x1 += -4;
+                y1 += -9;
+                x2 += -4;
+                y2 += -9; //рисование имен вершин
+                V1 = new Label("" + vertex.get(i).first);
+                V1.setLayoutX(x1);
+                V1.setLayoutY(y1);
+                V2 = new Label("" + vertex.get(i).second);
+                V2.setLayoutX(x2);
+                V2.setLayoutY(y2);
+                V1.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
+                V2.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
+                Pane1.getChildren().addAll(V1, V2);
+            }
+        }
+    }
 
-            edge = new Line(x1, y1, x2, y2);
-            edge.setStrokeWidth(4);
-            edge.setStroke(Color.RED);
-            Pane1.getChildren().addAll(edge, new Circle(x1, y1, 9, Color.GOLD), new Circle(x2, y2, 9, Color.GOLD));
-            x1 += -4;
-            y1 += -9;
-            x2 += -4;
-            y2 += -9; //рисование имен вершин
-            V1 = new Label("" + vertex.get(i).first);
-            V1.setLayoutX(x1);
-            V1.setLayoutY(y1);
-            V2 = new Label("" + vertex.get(i).second);
-            V2.setLayoutX(x2);
-            V2.setLayoutY(y2);
-            V1.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
-            V2.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
-            Pane1.getChildren().addAll(V1, V2);
-            //Pane1.getChildren().clear();
+    private void paint_Vertex() {
+        Label V1;
+        for (int i = 0; i < numV; i++) {
+            if (algoritm.in_tree[i]) {
+                x1 = CircleGraph.getRadius() * Math.cos(2 * Math.PI / numV * (i + 1)) + CircleGraph.getCenterX();
+                y1 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * (i + 1)) + CircleGraph.getCenterY();
+                Pane1.getChildren().addAll(new Circle(x1, y1, 9, Color.RED));
+                x1 += -4;
+                y1 += -9;
+                i += 1;
+                V1 = new Label("" + i);
+                i--;
+                V1.setLayoutX(x1);
+                V1.setLayoutY(y1);
+                V1.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
+                Pane1.getChildren().addAll(V1);
+            }
         }
     }
 
@@ -167,7 +195,27 @@ public class Controller implements Initializable {
             temp = new GraphStruct(readyArr[i], readyArr[i + 1], readyArr[i + 2]);
             vertex.add(temp);
         }
+        for (int i = 0; i < (vertex.size() - 1); i++) {
+            if ((vertex.get(i + 1).second == vertex.get(i).first) && (vertex.get(i).second == vertex.get(i + 1).first))
+                if (vertex.get(i).weight > vertex.get(i + 1).weight) {
+                    vertex.remove(i);
+                    i--;
+                } else {
+                    vertex.remove(i + 1);
+                    i--;
+                }
+        }
         readyArr = null;
+        algoritm = new Dijkstra(numV, vertex);
+    }
+
+    @FXML
+    public void finalButtonClicked(ActionEvent event) {
+        System.out.println("final clicked");
+        algoritm.dijkstra(vertex, temp);
+        paint_GRAPH_RED();
+        clearButton.setDisable(false);
+        nextStepButton.setDisable(true);
     }
 
     @FXML
@@ -191,15 +239,27 @@ public class Controller implements Initializable {
         m2 = 0;
         Pane1.getChildren().clear();
         clearButton.setDisable(true);
+        SingleSelectionModel<Tab> selectionModel = tabPane1.getSelectionModel();
+
+        if (selectionModel.getSelectedIndex() == 0) {
+            selectionModel.select(1);
+        } else {
+            selectionModel.select(0);
+        }
     }
 
     @FXML
     public void nextStepButtonClicked(ActionEvent event) {
         System.out.println("next clicked");
-        algoritm = new Dijkstra(numV, vertex, temp);
-        paint_GRAPH_RED();
-        nextStepButton.setDisable(true);
+        //algoritm.dijkstra(vertex,temp);
+        algoritm.oneStep(vertex, temp);
+        if (algoritm.isEnd()) {
+            paint_GRAPH_RED();
+            clearButton.setDisable(false);
+            nextStepButton.setDisable(true);
+        } else paint_Vertex();
     }
+
 
     @FXML
     public void loadButtonClicked(ActionEvent event) {
@@ -218,7 +278,14 @@ public class Controller implements Initializable {
         init(readyArr);
         paint_GRAPH(CircleGraph);
         nextStepButton.setDisable(false);
-        clearButton.setDisable(false);
+        finalButton.setDisable(true);
+        SingleSelectionModel<Tab> selectionModel = tabPane1.getSelectionModel();
+
+        if (selectionModel.getSelectedIndex() == 0) {
+            selectionModel.select(1);
+        } else {
+            selectionModel.select(0);
+        }
     }
 
 
@@ -245,6 +312,7 @@ public class Controller implements Initializable {
                     inpInt[i] = ibuff;
                     buff2 += Integer.toString(ibuff) + " ";
                     if (i % 3 == 1) buff2 += "\n";
+                    //System.out.println(inpInt[i]);
                     i++;
                 }
             }
@@ -260,6 +328,7 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         startButton.setDisable(true);
+        finalButton.setDisable(true);
         fileField.setText("graph.txt");
         nextStepButton.setDisable(true);
         clearButton.setDisable(true);
