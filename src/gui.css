@@ -1,0 +1,38 @@
+
+.tab-pane > .tab-header-area > .headers-region > .tab:top {
+    -fx-border-color: #270c28;
+    -fx-border-radius: 5 5 0 0;
+    -fx-background-color: #270c28;
+    -fx-pref-height: 30px;
+    -fx-background-insets: 0;
+}
+.tab-pane > .tab-header-area > .headers-region > .tab:selected > .tab-container > .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: #270c28;
+    -fx-font-weight: bold;
+}
+.tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-color: #5b5454;
+    -fx-border-color: #5b5454;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-insets: 0;
+    -fx-pref-height: 45px;
+}
+.tab-pane > .tab-header-area > .headers-region > .tab:selected > .tab-container > .tab-label {
+     -fx-alignment: CENTER;
+     -fx-text-fill: white;
+     -fx-font-weight: bold;
+ }
+ .tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label {
+     -fx-alignment: CENTER;
+     -fx-text-fill: white;
+     -fx-font-weight: bold;
+ }
+ /*#AnchPane{
+     -fx-background-color: rgb(140,48,70);
+
+ }*/
+ #V1{
+      -fx-font-size: 32px;
+      -fx-font-weight: bold;
+  }
