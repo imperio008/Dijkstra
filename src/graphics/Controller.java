@@ -1,4 +1,4 @@
-package grapics;
+package graphics;
 
 
 import algoritm.Dijkstra;
@@ -18,10 +18,17 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+/**
+ * Класс Controller наследованный от Initializable
+ * В данном классе находится GUI
+ * Визуализация выполнена на Javafx
+ *
+ * @author Хафизов Ильнур
+ */
 
 public class Controller implements Initializable {
-    @FXML
-    Label outNameLabel;
+    @FXML                   //все переменные с пометками @FXML являются элементами GUI
+            Label outNameLabel;
     @FXML
     TextField fileField;
     @FXML
@@ -48,19 +55,20 @@ public class Controller implements Initializable {
     Tab tab2 = new Tab();
     @FXML
     Button finalButton;
-    int[] inpInt = null;
-    int[] readyArr = null;
-    int numV;
-    int size = 0;
-    GraphFrame frm;
-    GraphStruct temp;
-    Dijkstra algoritm;
+    int[] inpInt = null;        //массив для считывания из файла
+    int[] readyArr = null;      //массив для обработки данных
+    int numV;                   //количество вершин
+    int size = 0;               //размер файла
+    GraphStruct temp;           //вспомогательная переменная
+    Dijkstra algoritm;          //переменная в которой будет обрабатываться алгоритм
     public static final double INF = Integer.MAX_VALUE / 10;
-    double m1, m2;
+    double x1, y1, x2, y2, l1, l2, m1, m2;  //переменные для координат
+    private Vector<GraphStruct> vertex;     //массив рёбер
 
-    double x1, y1, x2, y2, l1, l2;
-    private Vector<GraphStruct> vertex;
-
+    /**
+     * Класс GraphStruct
+     * Хранит в себе все имеющиеся рёбра
+     */
     public class GraphStruct {
         public int first;
         public int second;
@@ -73,157 +81,35 @@ public class Controller implements Initializable {
         }
     }
 
-    public void paint_GRAPH(Circle R) {
-        Label V1, V2, V3, W;
-        Line edge;
-        // Отрисовка графа
-        for (int i = 0; i < vertex.size(); i++) {
-            x1 = R.getRadius() * Math.cos(2 * Math.PI / numV * vertex.get(i).first) + R.getCenterX();
-            y1 = R.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(i).first) + R.getCenterY();
-            x2 = R.getRadius() * Math.cos(2 * Math.PI / numV * vertex.get(i).second) + R.getCenterX();
-            y2 = R.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(i).second) + R.getCenterY();
-
-            edge = new Line(x1, y1, x2, y2);
-            edge.setStrokeWidth(7);
-            edge.setStroke(Color.WHITE);
-            Pane1.getChildren().addAll(edge, new Circle(x1, y1, 9, Color.GOLD), new Circle(x2, y2, 9, Color.GOLD));
-            x1 += -4;
-            y1 += -9;
-            x2 += -4;
-            y2 += -9; //рисование имен вершин
-            V1 = new Label("" + vertex.get(i).first);
-            V1.setLayoutX(x1);
-            V1.setLayoutY(y1);
-            V2 = new Label("" + vertex.get(i).second);
-            V2.setLayoutX(x2);
-            V2.setLayoutY(y2);
-            V1.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
-            V2.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
-            Pane1.getChildren().addAll(V1, V2);
-        }
-        x1 = R.getRadius() * Math.cos(2 * Math.PI / numV * vertex.get(0).first) + R.getCenterX();//отрисовка 1ой вершины
-        y1 = R.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(0).first) + R.getCenterY();
-        V1 = new Label("" + vertex.get(0).first);
-        x2 = x1 - 4;
-        y2 = y1 - 9;
-        V1.setLayoutX(x2);
-        V1.setLayoutY(y2);
-        V1.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(255,255,255); -fx-font-family: \"Impact\";");
-        Pane1.getChildren().addAll(new Circle(x1, y1, 9, Color.RED), V1);
-        V2 = new Label("0");
-        x1 += 10;
-        y1 += 10;
-        V2.setLayoutX(x1);
-        V2.setLayoutY(y1);
-        V2.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(255,255,255); -fx-font-family: \"Impact\";");
-        Pane1.getChildren().addAll(V2);
-
-    }
-
-    private void paint_GRAPH_RED() {
-        Label V1, V2, W;
-        Line edge;
-        for (int i = 0; i < numV; i++) {
-            x1 = CircleGraph.getRadius() * Math.cos(2 * Math.PI / numV * vertex.get(i).first) + CircleGraph.getCenterX();
-            y1 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(i).first) + CircleGraph.getCenterY();
-            x2 = CircleGraph.getRadius() * Math.cos(2 * Math.PI / numV * vertex.get(i).second) + CircleGraph.getCenterX();
-            y2 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(i).second) + CircleGraph.getCenterY();
-            if (algoritm.getDist(vertex.get(i).first) != INF) {
-                l1 = x1 + 10;
-                l2 = y1 + 10;
-                W = new Label(algoritm.getDist(vertex.get(i).first) + "");
-                W.setLayoutX(l1);
-                W.setLayoutY(l2);
-                W.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: blue; -fx-font-family: \"Impact\";");
-                Pane1.getChildren().addAll(W);
-                Pane1.getChildren().addAll(new Circle(x1, y1, 9, Color.GOLD));
-            } else if (algoritm.getDist(vertex.get(i).second) != INF) {
-                m1 = x2 + 10;
-                m2 = y2 + 10;
-                W = new Label(algoritm.getDist(vertex.get(i).second) + "");
-                W.setLayoutX(m1);
-                W.setLayoutY(m2);
-                W.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: blue; -fx-font-family: \"Impact\";");
-                Pane1.getChildren().addAll(W);
-            }
-            if ((algoritm.getDist(vertex.get(i).second) != INF) || (algoritm.getDist(vertex.get(i).first) != INF)) {
-                edge = new Line(x1, y1, x2, y2);
-                edge.setStrokeWidth(4);
-                edge.setStroke(Color.RED);
-                Pane1.getChildren().addAll(edge, new Circle(x2, y2, 9, Color.RED), new Circle(x1, y1, 9, Color.RED));
-                x1 += -4;
-                y1 += -9;
-                x2 += -4;
-                y2 += -9; //рисование имен вершин
-                V1 = new Label("" + vertex.get(i).first);
-                V1.setLayoutX(x1);
-                V1.setLayoutY(y1);
-                V2 = new Label("" + vertex.get(i).second);
-                V2.setLayoutX(x2);
-                V2.setLayoutY(y2);
-                V1.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
-                V2.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
-                Pane1.getChildren().addAll(V1, V2);
-            }
-        }
-    }
-
-    private void paint_Vertex() {
-        Label V1;
-        for (int i = 0; i < numV; i++) {
-            if (algoritm.in_tree[i]) {
-                x1 = CircleGraph.getRadius() * Math.cos(2 * Math.PI / numV * (i + 1)) + CircleGraph.getCenterX();
-                y1 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * (i + 1)) + CircleGraph.getCenterY();
-                Pane1.getChildren().addAll(new Circle(x1, y1, 9, Color.RED));
-                x1 += -4;
-                y1 += -9;
-                i += 1;
-                V1 = new Label("" + i);
-                i--;
-                V1.setLayoutX(x1);
-                V1.setLayoutY(y1);
-                V1.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
-                Pane1.getChildren().addAll(V1);
-            }
-        }
-    }
-
-    public void init(int[] readyArr) {
-        vertex = new Vector<GraphStruct>();
-        numV = readyArr[0];
-        for (int i = 2; i < readyArr.length; i += 3) {
-            temp = new GraphStruct(readyArr[i], readyArr[i + 1], readyArr[i + 2]);
-            vertex.add(temp);
-        }
-        for (int i = 0; i < (vertex.size() - 1); i++) {
-            if ((vertex.get(i + 1).second == vertex.get(i).first) && (vertex.get(i).second == vertex.get(i + 1).first))
-                if (vertex.get(i).weight > vertex.get(i + 1).weight) {
-                    vertex.remove(i);
-                    i--;
-                } else {
-                    vertex.remove(i + 1);
-                    i--;
-                }
-        }
-        readyArr = null;
-        algoritm = new Dijkstra(numV, vertex);
-    }
-
+    /**
+     * Метод реагирующий на нажатие кнопки "Финальный шаг"
+     * В данном методе вызывается алгоритм Дейкстры, который проводится с данной точки и работает до конца(до завершения)
+     * После выполнения алгоритма прорисовывается граф с минимальными путями (paint_GRAPH_RED)
+     * Так же выводится список смежности в поле outputTextArea
+     *
+     * @param event событие нажатия кнопки
+     */
     @FXML
     public void finalButtonClicked(ActionEvent event) {
-        System.out.println("final clicked");
-        algoritm.dijkstra(vertex, temp);
+        algoritm.dijkstra(vertex);
         paint_GRAPH_RED();
         clearButton.setDisable(false);
         nextStepButton.setDisable(true);
+        finalButton.setDisable(true);
+        printToArea();
     }
 
+    /**
+     * Метод реагирующий на нажатие кнопки "Очистить граф"
+     * В этом методе обнуляются все переменные, освобождается память, также очищается панель с рисовкой графа
+     * Так же после нажатия программа переключается между вкладками
+     *
+     * @param event событие нажатия кнопки
+     */
     @FXML
     public void clearButtonClicked(ActionEvent event) {
-        System.out.println("clear clicked");
         algoritm.clear();
         algoritm = null;
-        //inpInt = null;
         readyArr = null;
         vertex = null;
         numV = 0;
@@ -246,39 +132,55 @@ public class Controller implements Initializable {
         } else {
             selectionModel.select(0);
         }
+        outputTextArea.setText("");
     }
 
+    /**
+     * Метод реагирующий на нажатие кнопки "Следующий шаг"
+     * В этом методе запускается один шаг алгоритма Дейкстры
+     * Также прорисовывается вершина которая была обработана
+     * Если алгоритм заканчивается после нажатия кнопки, вырисовывается граф с минимальными путями(paint_GRAPH_RED)
+     *
+     * @param event событие нажатия кнопки
+     */
     @FXML
     public void nextStepButtonClicked(ActionEvent event) {
-        System.out.println("next clicked");
-        //algoritm.dijkstra(vertex,temp);
-        algoritm.oneStep(vertex, temp);
+        algoritm.oneStep(vertex);
         if (algoritm.isEnd()) {
             paint_GRAPH_RED();
             clearButton.setDisable(false);
             nextStepButton.setDisable(true);
+            finalButton.setDisable(true);
+            printToArea();
         } else paint_Vertex();
     }
 
-
+    /**
+     * Метод реагирующий на нажатие кнопки "Загрузить"
+     * Вызывает метод fileOk() который выполняет считывание с файла
+     * Название файла вводится в соответствующее поле
+     *
+     * @param event событие нажатия кнопки
+     */
     @FXML
     public void loadButtonClicked(ActionEvent event) {
-        System.out.println("load clicked");
         fileOk();
     }
 
+    /**
+     * Метод реагирующий на нажатие кнопки "Нарисовать граф"
+     * Метод выполняет обработку поступивших из файла данный и рисует начальный граф (paint_GRAPH)
+     * После нажания на кнопку выполняется переключения между вкладками программы
+     *
+     * @param event событие нажатия кнопки
+     */
     @FXML
-    public void startButtonClicked(ActionEvent actionEvent) {
-        System.out.println("start clicked");
+    public void startButtonClicked(ActionEvent event) {
         startButton.setDisable(true);
-        int j;
-        for (j = 0; j < inpInt.length; j++) if (inpInt[j] == 0) break;
-        readyArr = new int[j];
-        for (int i = 0; i < j; i++) readyArr[i] = inpInt[i];
-        init(readyArr);
-        paint_GRAPH(CircleGraph);
+        init(inpInt);
+        paint_GRAPH();
         nextStepButton.setDisable(false);
-        finalButton.setDisable(true);
+        finalButton.setDisable(false);
         SingleSelectionModel<Tab> selectionModel = tabPane1.getSelectionModel();
 
         if (selectionModel.getSelectedIndex() == 0) {
@@ -288,7 +190,194 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Метод рисующий граф введенный из файла
+     * Также помечает начальную вершину рисую под ней вес
+     */
+    @FXML
+    public void paint_GRAPH() {
+        Label V1, V2, V3;
+        Line edge;
+        // Отрисовка графа
+        for (int i = 0; i < vertex.size(); i++) {
+            x1 = CircleGraph.getRadius() * Math.cos(2 * Math.PI / numV * vertex.get(i).first) + CircleGraph.getCenterX();
+            y1 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(i).first) + CircleGraph.getCenterY();
+            x2 = CircleGraph.getRadius() * Math.cos(2 * Math.PI / numV * vertex.get(i).second) + CircleGraph.getCenterX();
+            y2 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(i).second) + CircleGraph.getCenterY();
+            V3 = new Label("" + vertex.get(i).weight);
+            V3.setLayoutX((x1 + x2) / 2 + 10);
+            V3.setLayoutY((y1 + y2) / 2 + 10);
+            edge = new Line(x1, y1, x2, y2);
+            edge.setStrokeWidth(4);
+            edge.setStroke(Color.BLUE);
+            Pane1.getChildren().addAll(edge, new Circle(x1, y1, 9, Color.GOLD), new Circle(x2, y2, 9, Color.GOLD));
+            x1 += -4;
+            y1 += -9;
+            x2 += -4;
+            y2 += -9; //рисование имен вершин
+            V1 = new Label("" + vertex.get(i).first);
+            V1.setLayoutX(x1);
+            V1.setLayoutY(y1);
+            V2 = new Label("" + vertex.get(i).second);
+            V2.setLayoutX(x2);
+            V2.setLayoutY(y2);
+            V1.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
+            V2.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(12,16,45); -fx-font-family: \"Impact\";");
+            V3.setStyle("-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: rgb(157,255,254); -fx-font-family: \"Impact\";");
+            Pane1.getChildren().addAll(V1, V2, V3);
+        }
+        x1 = CircleGraph.getRadius() * Math.cos(2 * Math.PI / numV * vertex.get(0).first) + CircleGraph.getCenterX();//отрисовка 1ой вершины
+        y1 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(0).first) + CircleGraph.getCenterY();
+        V2 = new Label("0");
+        x1 += 10;
+        y1 += 10;
+        V2.setLayoutX(x1);
+        V2.setLayoutY(y1);
+        V2.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: rgb(255,255,255); -fx-font-family: \"Impact\";");
+        Pane1.getChildren().addAll(V2);
+    }
 
+    /**
+     * Метод рисующий минимальные пути на графах(красными линиями)
+     * Также под каждой вершиной рисуется расстояние от начальной вершины
+     */
+    @FXML
+    private void paint_GRAPH_RED() {
+        Label V1, V2, W;
+        Line edge;
+        for (int i = 0; i < numV; i++) {
+            x1 = CircleGraph.getRadius() * Math.cos(2 * Math.PI / numV * vertex.get(i).first) + CircleGraph.getCenterX();
+            y1 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(i).first) + CircleGraph.getCenterY();
+            x2 = CircleGraph.getRadius() * Math.cos(2 * Math.PI / numV * vertex.get(i).second) + CircleGraph.getCenterX();
+            y2 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * vertex.get(i).second) + CircleGraph.getCenterY();
+            if (algoritm.getDist(vertex.get(i).first) != INF) {
+                l1 = x1 + 10;
+                l2 = y1 + 10;
+                W = new Label(algoritm.getDist(vertex.get(i).first) + "");
+                W.setLayoutX(l1);
+                W.setLayoutY(l2);
+                W.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: rgb(255,242,212); -fx-font-family: \"Impact\";");
+                Pane1.getChildren().addAll(new Circle(x1, y1, 9, Color.GOLD), W);
+            } else if (algoritm.getDist(vertex.get(i).second) != INF) {
+                m1 = x2 + 10;
+                m2 = y2 + 10;
+                W = new Label(algoritm.getDist(vertex.get(i).second) + "");
+                W.setLayoutX(m1);
+                W.setLayoutY(m2);
+                W.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: rgb(255,242,212); -fx-font-family: \"Impact\";");
+                Pane1.getChildren().addAll(W);
+            }
+            if ((algoritm.getDist(vertex.get(i).second) != INF) && (algoritm.getDist(vertex.get(i).first) != INF)) {
+                edge = new Line(x1, y1, x2, y2);
+                edge.setStrokeWidth(4);
+                edge.setStroke(Color.RED);
+                Pane1.getChildren().addAll(edge, new Circle(x2, y2, 9, Color.DARKVIOLET), new Circle(x1, y1, 9, Color.DARKVIOLET));
+                x1 += -4;
+                y1 += -9;
+                x2 += -4;
+                y2 += -9; //рисование имен вершин
+                V1 = new Label("" + vertex.get(i).first);
+                V1.setLayoutX(x1);
+                V1.setLayoutY(y1);
+                V2 = new Label("" + vertex.get(i).second);
+                V2.setLayoutX(x2);
+                V2.setLayoutY(y2);
+                V1.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white; -fx-font-family: \"Impact\";");
+                V2.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white; -fx-font-family: \"Impact\";");
+                Pane1.getChildren().addAll(V1, V2);
+            }
+        }
+    }
+
+    /**
+     * Метод рисует вершину, которая была обработана за последний шаг
+     */
+    @FXML
+    private void paint_Vertex() {
+        Label V1;
+        for (int i = 0; i < numV; i++) {
+            if (algoritm.in_tree[i]) {
+                x1 = CircleGraph.getRadius() * Math.cos(2 * Math.PI / numV * (i + 1)) + CircleGraph.getCenterX();
+                y1 = CircleGraph.getRadius() * Math.sin(2 * Math.PI / numV * (i + 1)) + CircleGraph.getCenterY();
+                Pane1.getChildren().addAll(new Circle(x1, y1, 9, Color.RED));
+                x1 += -4;
+                y1 += -9;
+                i += 1;
+                V1 = new Label("" + i);
+                i--;
+                V1.setLayoutX(x1);
+                V1.setLayoutY(y1);
+                V1.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white; -fx-font-family: \"Impact\";");
+                Pane1.getChildren().addAll(V1);
+            }
+        }
+    }
+
+    /**
+     * Метод обрабатывающий входные данные из файла
+     *
+     * @param inpInt массив, который был считан из файла
+     */
+    public void init(int[] inpInt) {
+        vertex = new Vector<GraphStruct>();
+        int j;
+        for (j = 0; j < inpInt.length; j++) if (inpInt[j] == 0) break;
+        readyArr = new int[j];
+        for (int i = 0; i < j; i++) readyArr[i] = inpInt[i];
+        numV = readyArr[0];
+        for (int i = 1; i < readyArr.length; i += 3) {
+            temp = new GraphStruct(readyArr[i], readyArr[i + 1], readyArr[i + 2]);
+            vertex.add(temp);
+        }
+        for (int i = 0; i < (vertex.size() - 1); i++) {
+            if ((vertex.get(i + 1).second == vertex.get(i).first) && (vertex.get(i).second == vertex.get(i + 1).first))
+                if (vertex.get(i).weight > vertex.get(i + 1).weight) {
+                    vertex.remove(i);
+                    i--;
+                } else {
+                    vertex.remove(i + 1);
+                    i--;
+                }
+        }
+        readyArr = null;
+        algoritm = new Dijkstra(numV, vertex);
+    }
+
+    /**
+     * Метод, выводяший списки смежности в поле, находящейся в первой вкладке программы
+     */
+    public void printToArea() {
+        String buff = new String();
+        ArrayList[] adj = new ArrayList[numV];
+        for (int i = 0; i < numV; ++i) {
+            adj[i] = new ArrayList<Integer>();
+        }
+        for (int i = 0; i < numV; i++) {
+            adj[vertex.get(i).first - 1].add(vertex.get(i).second);
+            adj[vertex.get(i).second - 1].add(vertex.get(i).first);
+        }
+        for (int i = 0; i < numV; i++) {
+            for (int j = 0; j < adj[i].size(); j++) {
+                int n = i + 1;
+                Integer a = (Integer) adj[i].get(j);
+                if (n == a) {
+                    adj[i].remove(j);
+                }
+            }
+        }
+        for (int i = 0; i < numV; i++) {
+            buff = buff + (i + 1) + ": ";
+            for (int j = 0; j < adj[i].size(); j++) {
+                buff = buff + " -> " + adj[i].get(j);
+            }
+            buff += "\n";
+        }
+        outputTextArea.setText(buff);
+    }
+
+    /**
+     * Метод, считывающий информацию из файла
+     */
     @FXML
     public void fileOk() {
         int i = 0;
@@ -311,8 +400,7 @@ public class Controller implements Initializable {
                     int ibuff = Integer.parseInt(stoken.nextToken());
                     inpInt[i] = ibuff;
                     buff2 += Integer.toString(ibuff) + " ";
-                    if (i % 3 == 1) buff2 += "\n";
-                    //System.out.println(inpInt[i]);
+                    if (i % 3 == 0) buff2 += "\n";
                     i++;
                 }
             }
@@ -325,6 +413,12 @@ public class Controller implements Initializable {
         startButton.setDisable(false);
     }
 
+    /**
+     * Инициализация программы перед запуском
+     *
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         startButton.setDisable(true);
