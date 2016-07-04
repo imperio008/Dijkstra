@@ -1,7 +1,7 @@
 package algoritm;
 
 
-import grapics.Controller;
+import graphics.Controller;
 
 import java.util.*;
 
